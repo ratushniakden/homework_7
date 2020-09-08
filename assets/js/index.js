@@ -54,33 +54,37 @@ class Stack {
   }
 }
 
-function isBalanced(str) {
-  if (str.isEmpty) {
-    return true;
+function isBalanced(
+  string,
+  options = {
+    braces: {
+      "{": "}",
+      "(": ")",
+      "[": "]",
+      "'": "'",
+      '"': '"',
+    },
   }
+) {
+  const { braces } = options;
+  const closeBrackets = Object.values(braces);
+  const stack = new Stack(string.length);
 
-  const stack = new Stack();
-
-  for (const brace of str) {
-    if (brace == "{" || brace == "(" || brace == "[" || brace === "<") {
-      stack.push(brace);
+  for (const symbol of string) {
+    if (braces[symbol]) {
+      stack.push(symbol);
+      continue;
     }
 
-    if (brace == "}" || brace == ")" || brace == "]" || brace === ">") {
-      if (stack.isEmpty) {
-        return false;
-      }
-      if (
-        (brace === "}" && stack.peek() === "{") ||
-        (brace === ")" && stack.peek() === "(") ||
-        (brace === "]" && stack.peek() === "[") ||
-        (brace === ">" && stack.peek() === "<")
-      ) {
-        stack.pop();
-      } else {
-        return false;
-      }
+    if (closeBrackets.includes(symbol) && stack.isEmpty) {
+      return false;
     }
+
+    if (braces[stack.peek()] === symbol) {
+      stack.pop();
+      continue;
+    }
+    return false;
   }
   return stack.isEmpty;
 }
@@ -154,7 +158,7 @@ class LinkedListIterator {
   }
 }
 
-const input = prompt("Enter integer numbers:");
+const input = prompt("Enter values:");
 console.log(inputWithoutDuplicates(input));
 
 function inputWithoutDuplicates(string) {
